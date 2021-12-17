@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use common\models\Book;
 use common\models\Library;
+use yii\web\UploadedFile;
 
 
 class ProfileController extends Controller
@@ -22,7 +23,7 @@ class ProfileController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'update-address', 'update-account'],
+                        'actions' => ['index', 'create'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
@@ -38,7 +39,7 @@ class ProfileController extends Controller
         $id = $user->id;
         $bookc  = Book::find()->userid($id)->count();
         $dataProvider = new ActiveDataProvider([
-            'query' => Book::find()->userid($id),
+            'query' => Book::find()->userid($id)->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -47,6 +48,23 @@ class ProfileController extends Controller
             'user' =>  $user,
             'bookc' =>  $bookc,
             'dataProvider' => $dataProvider
+        ]);
+    }
+    public function actionCreate()
+    {
+        $model = new Book();
+
+        if ($this->request->isPost) {
+            $model->thumbnail = UploadedFile::getInstanceByName('thumbnail');
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['index', 'id' => $model->id]);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', [
+            'model' => $model,
         ]);
     }
 }
