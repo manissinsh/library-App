@@ -80,7 +80,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Book::find()->published(),
+            'query' => Book::find()->published()->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -93,7 +93,7 @@ class SiteController extends Controller
     public function actionLibrary()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Library::find(),
+            'query' => Library::find()->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -106,7 +106,7 @@ class SiteController extends Controller
     public function actionBook()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Book::find()->published(),
+            'query' => Book::find()->published()->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -121,7 +121,7 @@ class SiteController extends Controller
         $id = \Yii::$app->request->get('id');
         $model  = Library::findOne($id);
         $dataProvider = new ActiveDataProvider([
-            'query' => Book::find()->id($id),
+            'query' => Book::find()->id($id)->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -135,7 +135,7 @@ class SiteController extends Controller
     public function actionAuthor()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),
+            'query' => User::find()->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -151,7 +151,7 @@ class SiteController extends Controller
         $model  = User::findOne($id);
         $bookc  = Book::find()->userid($id)->count();
         $dataProvider = new ActiveDataProvider([
-            'query' => Book::find()->userid($id),
+            'query' => Book::find()->userid($id)->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 10,
             ],
@@ -171,12 +171,13 @@ class SiteController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+           return $this->goHome();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+          //  return $this->goBack();
+            return $this->redirect(['/profile/index']);
         }
 
         $model->password = '';
