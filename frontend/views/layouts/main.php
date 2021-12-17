@@ -57,6 +57,10 @@ AppAsset::register($this);
                     'url' => ['/profile/index'],
                 ],
                 [
+                    'label' => 'Add Books',
+                    'url' => ['/profile/create'],
+                ],
+                [
                     'label' => 'Logout',
                     'url' => ['/site/logout'],
                     'linkOptions' => [
